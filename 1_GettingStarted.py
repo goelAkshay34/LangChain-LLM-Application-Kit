@@ -171,3 +171,16 @@ agent =  create_openai_functions_agent(llm, tools, prompt)
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose = True)
 
 # We can now invoke the agent. We can ask it questions about LangSmith:
+
+agent_executor.invoke({"input": "how can langsmith help with testing?"})
+
+# Ask something else
+
+agent_executor.invoke({"input", "what is the weather in SF"})
+
+# We can have conversations with it:
+chat_history = [HumanMessage(content = "Can LangSmith help test my LLM applications?"), AIMessage(content="Yes!")]
+agent_executor.invoke({
+    "chat_history": chat_history,
+    "input"= "Tell me how"
+})
