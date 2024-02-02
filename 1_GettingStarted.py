@@ -184,3 +184,41 @@ agent_executor.invoke({
     "chat_history": chat_history,
     "input"= "Tell me how"
 })
+
+########################################################################################################################
+# Serving with LangServe
+# It helps developers deploy LanChain chains as a REST API
+
+# pip install "langserve[all]"
+
+# To create a server, we will make serve.py file. It will have three things:
+# 1. The definition of our chain that we have built
+# 2. Our FastAPI app
+# 3. A definition of a route from which to serve the chain, which is done with 
+#    langserve.add_routes
+
+############################################################################################################################
+# serve.py
+
+from typing import List
+from fastapi import FastAPI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import faiss
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.tools.retriever import create_retriever_tool
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_openai import ChatOpenAI
+from langchain import hub
+from langchain.agents import create_openai_functions_agent
+from langchain.agents import AgentExecutor
+from langchain.pydantic_v1 import BaseModel, Field
+from langchain_core.messages import BaseMessage
+from langserve import add_routes
+
+# 1. Load Retriever
+loader = WebBaseLoader("https://docs.smith.langchain.com/overview")
+docs = loader.load()
+text_splitter = RecursiveCharacterTextSplitter()
